@@ -1,0 +1,33 @@
+version: 2
+
+jobs:
+  test:
+    docker:
+      - image: choffmeister/scala-ci:latest
+
+    working_directory: ~/scala-library.g8
+    steps:
+      - checkout
+      - restore_cache:
+          key: scala-library.g8-{{ checksum "project/build.properties"}}-{{ checksum "build.sbt" }}
+      - run:
+          name: Compile sources
+          command: sbt test:compile
+      - save_cache:
+          key: scala-library.g8-{{ checksum "project/build.properties"}}-{{ checksum "build.sbt" }}
+          paths:
+            - ~/.sbt
+            - ~/.ivy2
+      - run:
+          name: Test
+          command: sbt test:test
+
+workflows:
+  version: 2
+  test:
+    jobs:
+      - test:
+          filters:
+            branches:
+              ignore:
+                - gh-pages

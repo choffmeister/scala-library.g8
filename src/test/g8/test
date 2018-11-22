@@ -1,0 +1,4 @@
+>scalafmtCheck
+>test:scalafmtCheck
+>test:test
+>packageSite
